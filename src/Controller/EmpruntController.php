@@ -6,3 +6,24 @@ cours (l’affichage sera trié par date de la plus ancienne à la plus récente
 
 // Ajoutez une route pour récupérer tous les livres d’un auteur emprunté entre 2 dates 
 // définies  -->
+<?php
+// src/Controller/LuckyController.php
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Product;
+use DateTime;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+
+
+
+class EmpruntController extends AbstractController
+{
+
+
+}
