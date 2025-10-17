@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EmpruntController extends AbstractController
 {
+    //route retour de livre
      #[Route('/retourLivre/{idLivre}/{idUtilisateur}', name: 'retour_livre', methods: ['PATCH', 'PUT'])]
     public function retourLivre(EntityManagerInterface $entityManager, Request $request, int $idLivre, int $idUtilisateur): Response
     {
@@ -37,7 +38,7 @@ class EmpruntController extends AbstractController
                     JsonResponse::HTTP_NOT_FOUND // 404
                 );
             }
-            $emprunt->setDateRetour(new DateTime());
+            $emprunt->setDateRetour(new \DateTime());
 
             $entityManager->persist($emprunt);
             $entityManager->flush();
@@ -51,12 +52,54 @@ class EmpruntController extends AbstractController
         }
     }
 
+    //route nombre de livre emprunté par un utilisateur
     #[Route('/allEmpruntByUser/{idUser}', name: 'all_emprunt_by_user', methods: ['GET'])]
     public function allProduct(EntityManagerInterface $entityManager, Request $request, int $idUser): Response
     {
-        $emprunt = $entityManager->getRepository(Emprunt::class)->findAllEmpruntById($idUser);
-        $entityManager->flush();
-        return new Response('Nombre d\'emprunts : '.$emprunt);
+        $nbEmrpunts = $entityManager->getRepository(Emprunt::class)->findAllEmpruntById($idUser);
+        return new Response('Nombre d\'emprunts en cours : '.$nbEmprunts);
+    }
+
+    //route demande d'emprunt
+    #[Route('/demandeEmprunt/{idLivre}/{idUtilisateur}', name: 'demande_emprunt', methods: ['PATCH', 'PUT'])]
+    public function empruntLivre(EntityManagerInterface $entityManager, Request $request, int $idLivre, int $idUtilisateur): Response
+    {
+        try{
+            $content = json_decode($request->getContent(), true);
+
+            $emprunts = $entityManager->getRepository(Emprunt::class)->findOneBy(['livre' => $idLivre,'utilisateur' => $idUtilisateur]);
+           if (!$emprunts || $emprunts->getDateRetour() !== null) {
+                $livre = $entityManager->getRepository(Livre::class)->find($idLivre);
+                $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($idUtilisateur);
+
+                if (!$livre || !$utilisateur) {
+                    return new JsonResponse(['message' => 'Livre ou utilisateur introuvable'], 404);
+                }
+
+                $emprunt = new Emprunt();
+                $emprunt->setDateEmprunt(new \DateTime());
+                $emprunt->setDateRetour(null);
+                $emprunt->setDateRetourSuppose($content['retourSuppose']);
+                $emprunt->setLivre($livre);
+                $emprunt->setUtilisateur($utilisateur);
+
+                $entityManager->persist($emprunt);
+                $entityManager->flush();
+
+                return new Response('Emprunt créé'.$emprunt->getId());
+            }else{
+                return new JsonResponse(
+                    ['message' => 'Ce livre est déjà emprunté.'],
+                    JsonResponse::HTTP_NOT_FOUND // 404
+                );
+            }
+            
+        } catch (\Exception $e){
+            return new JsonResponse(
+                ['error' => 'Erreur serveur : '.$e->getMessage()],
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR 
+            );
+        }
     }
 
 }

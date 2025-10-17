@@ -22,8 +22,8 @@ class EmpruntRepository extends ServiceEntityRepository
             $query = $entityManager->createQuery(
                 'SELECT COUNT(e.id) AS nombre_emprunts
                 FROM App\Entity\Emprunt e
-                WHERE e.utilistateur_id = :idUser
-                AND e.date_retour IS NULL'
+                WHERE e.utilistateur = :idUser
+                AND e.dateRetour IS NULL'
             )->setParameter('idUser', $idUser);
 
             return (int) $query->getSingleScalarResult();
