@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Product;
-//use DateTime;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
