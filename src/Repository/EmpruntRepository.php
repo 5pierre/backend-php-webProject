@@ -16,28 +16,18 @@ class EmpruntRepository extends ServiceEntityRepository
         parent::__construct($registry, Emprunt::class);
     }
 
-    //    /**
-    //     * @return Emprunt[] Returns an array of Emprunt objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllEmpruntById (int $idUser){
+            $entityManager = $this->getEntityManager();
 
-    //    public function findOneBySomeField($value): ?Emprunt
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+            $query = $entityManager->createQuery(
+                'SELECT COUNT(e.id) AS nombre_emprunts
+                FROM App\Entity\Emprunt e
+                WHERE e.utilistateur_id = :idUser
+                AND e.date_retour IS NULL'
+            )->setParameter('idUser', $idUser);
+
+            return (int) $query->getSingleScalarResult();
+    }
+
+    //    
 }
