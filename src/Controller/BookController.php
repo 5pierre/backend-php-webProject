@@ -29,7 +29,7 @@ class BookController extends AbstractController
 
         $product = new Livre();
         $product->setTitre($content["titre"]);
-        $product->setDatePublication(new DateTime);
+        $product->setDatePublication(new \DateTime());
         $product->setDisponible($content["disponible"]);
         $product->setCategorie($content["categorie_id"]);
         $product->setUtilisateur($content["utilisateur_id"]);
@@ -80,7 +80,7 @@ class BookController extends AbstractController
         // $product->setStock($content["stock"]);
 
         $product->setTitre($content["titre"]);
-        $product->setDatePublication(new DateTime);
+        $product->setDatePublication(new \DateTime());
         $product->setDisponible($content["disponible"]);
         $product->setCategorie($content["categorie_id"]);
         $product->setUtilisateur($content["utilisateur_id"]);
